@@ -1,30 +1,23 @@
-name: learn-github-actions
-run-name: ${{ github.actor }} is learning Github Actions
-on: [push]
+name: Context testing
+on: push
+
 jobs:
-  upload-artifact-job:
+  dump_contexts_to_log:
     runs-on: ubuntu-latest
-    name: Save output
     steps:
-      - uses: actions/checkout@v3
-      - shell: bash
-        run: |
-          expr 1 + 1 > output.log
-      - name: Upload output file
-        uses: actions/upload-artifact@v3
-        with:
-          name: output-log-file
-          path: output.log
-  download-artifact-job:
-    runs-on: ubuntu-latest
-    name: Download output
-    steps:
-      - uses: actions/checkout@v3
-      - name: Download output file
-        uses: actions/download-artifact@v3
-        with:
-          name: output-log-file
-    needs: upload-artifact-job
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
+      - name: Dump job context
+        run: echo '${{ toJSON(job) }}'
+      - name: Dump steps context
+        run: echo '${{ toJSON(steps) }}'
+      - name: Dump runner context
+        run: echo '${{ toJSON(runner) }}'
+      - name: Dump strategy context
+        run: echo '${{ toJSON(strategy) }}'
+      - name: Dump matrix context
+        run: echo '${{ toJSON(matrix) }}'
 # jobs:
 #   my_first_job:
 #     runs-on: ubuntu-latest
