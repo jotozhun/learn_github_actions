@@ -8,5 +8,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.3.0
       - name: Run build script
-        run: ./.github/scripts/something.sh
+        run: |
+          chmod +x ./.github/scripts/something.sh
+          ./.github/scripts/something.sh
         shell: bash
