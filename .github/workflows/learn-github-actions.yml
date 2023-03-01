@@ -1,67 +1,21 @@
-# name: learn-github-actions
-# run-name: ${{ github.actor }} is learning Github Actions
-# on: [push]
-
-# jobs:
+name: Reusable deploy workflow
 on:
-  workflow_dispatch:
-env:
-  # Setting an environment variable with the value of a configuration variable
-  env_var: ${{ vars.ENV_CONTEXT_VAR }}
+  workflow_call:
+    inputs:
+      build_id:
+        required: true
+        type: number
+      deploy_target:
+        required: true
+        type: string
+      perform_deploy:
+        required: true
+        type: boolean
 
 jobs:
-  display-variables:
-    name: ${{ vars.JOB_NAME }}
-    # You can use configuration variables with the `vars` context for dynamic jobs
-    if: ${{ vars.USE_VARIABLES == 'true' }}
-    runs-on: ${{ vars.RUNNER }}
-    environment: ${{ vars.ENVIRONMENT_STAGE }}
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.perform_deploy }}
     steps:
-    - name: Use variables
-      run: |
-        echo "repository variable : ${{ vars.REPOSITORY_VAR }}"
-        echo "organization variable : ${{ vars.ORGANIZATION_VAR }}"
-        echo "overridden variable : ${{ vars.OVERRIDE_VAR }}"
-        echo "variable from shell environment : $env_var"
-
-    - name: ${{ vars.HELLO_WORLD_STEP }}
-      if: ${{ vars.HELLO_WORLD_ENABLED == 'true' }}
-      uses: actions/hello-world-javascript-action@main
-      with:
-        who-to-greet: ${{ vars.GREET_NAME }}
-
-  
-# jobs:
-#   upload-artifact-job:
-#     runs-on: ubuntu-latest
-#     name: Save output
-#     steps:
-#       - uses: actions/checkout@v3
-#       - shell: bash
-#         run: |
-#           expr 1 + 1 > output.log
-#       - name: Upload output file
-#         uses: actions/upload-artifact@v3
-#         with:
-#           name: output-log-file
-#           path: output.log
-#   download-artifact-job:
-#     runs-on: ubuntu-latest
-#     name: Download output
-#     steps:
-#       - uses: actions/checkout@v3
-#       - name: Download output file
-#         uses: actions/download-artifact@v3
-#         with:
-#           name: output-log-file
-#     needs: upload-artifact-job
-# jobs:
-#   my_first_job:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Run build script
-#         run: ./.github/scripts/something.sh
-#         shell: bash
-
-
-
+      - name: Deploy build to target
+        run: deploy --build ${{ inputs.build_id }} --target ${{ inputs.deploy_target }}
