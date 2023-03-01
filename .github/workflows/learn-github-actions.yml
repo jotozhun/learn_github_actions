@@ -5,6 +5,8 @@ jobs:
   my_first_job:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3.3.0
       - name: Run build script
         run: ./.github/scripts/something.sh
         shell: bash
