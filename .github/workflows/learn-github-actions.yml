@@ -23,7 +23,7 @@ jobs:
       - name: Download output file
         uses: actions/download-artifact@v3
         with:
-          name: output.log
+          name: output-log-file
 # jobs:
 #   my_first_job:
 #     runs-on: ubuntu-latest
