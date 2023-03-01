@@ -2,9 +2,35 @@ name: learn-github-actions
 run-name: ${{ github.actor }} is learning Github Actions
 on: [push]
 jobs:
-  my_first_job:
+  upload-artifact-job:
     runs-on: ubuntu-latest
+    name: Save output
     steps:
-      - name: Run build script
-        run: ./.github/scripts/something.sh
-        shell: bash
+      - uses: actions/checkout@v3
+      - shell: bash
+        run: |
+          expr 1 + 1 > output.log
+      - name: Upload output file
+        uses: actions/upload-artifact@v3
+        with:
+          name: output-log-file
+          path: output.log
+  download-artifact-job:
+    runs-on: ubuntu-latest
+    name: Download output
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download output file
+        uses: actions/download-artifact@v3
+        with:
+          name: output.log
+# jobs:
+#   my_first_job:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Run build script
+#         run: ./.github/scripts/something.sh
+#         shell: bash
+
+
+
